@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.math.*;
 
 
 public class GUI extends JFrame {
@@ -10,17 +9,17 @@ public class GUI extends JFrame {
     ImageIcon newIcon2 = new ImageIcon("img/2.png");
     Image image2 = newIcon2.getImage();
     Image newimg2 = image2.getScaledInstance(60, 60,  java.awt.Image.SCALE_SMOOTH);
-    ImageIcon iconus2 = new ImageIcon(newimg2);
+    ImageIcon icon = new ImageIcon(newimg2);
 
     ImageIcon newIcon3 = new ImageIcon("img/3.png");
     Image image3 = newIcon3.getImage();
     Image newimg3 = image3.getScaledInstance(60, 60,  java.awt.Image.SCALE_SMOOTH);
-    ImageIcon iconus3 = new ImageIcon(newimg3);
+    ImageIcon icon1 = new ImageIcon(newimg3);
 
     ImageIcon newIcon4 = new ImageIcon("img/4.png");
     Image image4 = newIcon4.getImage();
     Image newimg4 = image4.getScaledInstance(60, 60,  java.awt.Image.SCALE_SMOOTH);
-    ImageIcon iconus4 = new ImageIcon(newimg4);
+    ImageIcon icon2 = new ImageIcon(newimg4);
 
     public GUI() {
         setTitle("ЭЦП ГОСТ 34.10-94");
@@ -49,11 +48,11 @@ public class GUI extends JFrame {
                 if (subfile.subscribe_file() == 0) {
                     String msg18 = "<html><font color = 'green'> Процесс успешно завершен: <br/> <font color = 'black'> <br/> Файл <br/> " +
                             inputFilePath + " <br/> <br/> успешно подписан ";
-                    JOptionPane.showMessageDialog(jd1, msg18, null, 0, iconus2);
+                    JOptionPane.showMessageDialog(jd1, msg18, null, 0, icon);
                 }
                 else{
                     String msg18 = "<html><font color = 'red'> Ошибка при попытке подписать файл: <br/> <font color = 'black'> <br/> Файл <br/> " + inputFilePath;
-                    JOptionPane.showMessageDialog(jd1, msg18, null, 0, iconus2);
+                    JOptionPane.showMessageDialog(jd1, msg18, null, 0, icon);
                 }
             }
         });
@@ -79,14 +78,14 @@ public class GUI extends JFrame {
                     jd2.setTitle("Электронная подпись действительна для этого файла");
                     String msg14 = "<html><font color = 'black'> Проверка завершена: <br/> <font color = 'green'> Подпись " +
                             "корректна! </font></html>";
-                    JOptionPane.showMessageDialog(jd2, msg14, null, 0, iconus3);
+                    JOptionPane.showMessageDialog(jd2, msg14, null, 0, icon1);
                 }
                 else{
                     JDialog jd2 = new JDialog();
                     jd2.setTitle("Электронная подпись недействительна для этого файла");
                     String msg14 = "<html><font color = 'black'> Проверка завершена: <br/> <font color = 'red'> Подпись " +
                             "некорректна! </font></html>";
-                    JOptionPane.showMessageDialog(jd2, msg14, null, 0, iconus4);
+                    JOptionPane.showMessageDialog(jd2, msg14, null, 0, icon2);
                 }
 
             }
@@ -107,34 +106,11 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
-
-    private void generateKeyFile() {
-
-        File publicKeyFile = null;
-
-//        try {
-//            publicKeyFile = new File("./key.txt");
-//            publicKeyFile.createNewFile();
-//            FileOutputStream pkfos = new FileOutputStream(publicKeyFile);
-//            BigInteger buffer_p = ElGamal.generateRandomNumber(new BigInteger("10000000000")).multiply(BigInteger.TEN);
-//            pkfos.write(String.valueOf(buffer_p).getBytes());
-//            pkfos.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        String msg17 = "<html><font color = 'green'> Процесс успешно завершен: <br/> <font color = 'black'> <br/> " +
-                "Закрытый ключ успешно сгенерирован в файл" + " <br/> " + publicKeyFile + "</font></html>";
-        JOptionPane.showMessageDialog(null, msg17, null, 0, iconus3);
-    }
-
-
     public String selectFile(String message) {
 
         File selectedFile = null;
 
-        JFileChooser fileChooser = new JFileChooser(new File("/"));
+        JFileChooser fileChooser = new JFileChooser(new File("./"));
         fileChooser.setDialogTitle(message);
 
 
