@@ -2,21 +2,17 @@ import java.math.BigInteger;
 import java.util.Random;
 
 class GOSTSignature {
-
     private BigInteger p;
     private BigInteger q;
     private BigInteger a;
-
     GOSTSignature(BigInteger p, BigInteger q, BigInteger a) {
         this.p = p;
         this.q = q;
         this.a = a;
     }
-
     BigInteger getPublicKey(BigInteger x) {
         return a.modPow(x, p);
     }
-
     BigInteger getRandomPrivateKey(int bitLength) {
         if(bitLength < 0 || bitLength < 128 || bitLength > q.bitLength()) {
             throw new IllegalArgumentException("Wrong key length");
@@ -28,10 +24,9 @@ class GOSTSignature {
         } while (result.compareTo(BigInteger.ZERO) < 0 || result.compareTo(q) > 0);
         return result;
     }
-
-    BigInteger getPrivateKeyByPassword(String passwordHash) {
-        return new BigInteger(passwordHash, 16);
-    }
+//    BigInteger getPrivateKeyByPassword(String passwordHash) {
+//        return new BigInteger(passwordHash, 16);
+//    }
 
     String sign(String hash, BigInteger x) {
         BigInteger h = new BigInteger(hash, 16);
@@ -52,7 +47,6 @@ class GOSTSignature {
         String sString = addPadding(s.toString(16));
         return rString + sString;
     }
-
     boolean verify(String hash, String signature, BigInteger y) {
         String rString = signature.substring(0, signature.length() / 2);
         String sString = signature.substring(signature.length() / 2);
@@ -73,7 +67,6 @@ class GOSTSignature {
         System.out.println("u = " + u);
         return r.equals(u);
     }
-
     private String addPadding(String input) {
         StringBuilder inputBuilder = new StringBuilder(input);
         for(int i = input.length(); i < 64; i++) {

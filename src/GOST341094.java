@@ -7,20 +7,19 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.security.Security;
-import java.util.Scanner;
 
 import static java.lang.Math.pow;
 
 public class GOST341094 {
     private String inputFilePath;
     private String sigFilePath;
-    private String pqaFilePath;
-    private String pubkeyFilePath;
+//    private String pqaFilePath;
+//    private String pubkeyFilePath;
     public GOST341094(){
         this.inputFilePath = null;
         this.sigFilePath = null;
-        this.pqaFilePath = null;
-        this.pubkeyFilePath = null;
+//        this.pqaFilePath = null;
+//        this.pubkeyFilePath = null;
     }
     public GOST341094(String file){
         try {
@@ -29,12 +28,10 @@ public class GOST341094 {
             e.printStackTrace();
         }
     }
-    public GOST341094(String infile, String sigfile, String pqafile, String pubfile){
+    public GOST341094(String infile, String sigfile){
         try {
             this.inputFilePath = infile;
             this.sigFilePath = sigfile;
-            this.pqaFilePath = pqafile;
-            this.pubkeyFilePath = pubfile;
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -47,6 +44,7 @@ public class GOST341094 {
             e.printStackTrace();
         }
     }
+
     private static byte[] readFromFile(File file) {
         byte[] data = null;
         try {
@@ -84,19 +82,10 @@ public class GOST341094 {
             BigInteger q = primes[1];
             BigInteger a = generator.generateA(p, q);
 
-            File file_pqa = new File(this.inputFilePath + ".pqa");
-
-            String params = p.toString(16) + "\n" + q.toString(16) + "\n" + a.toString(16);
-            writeToFile(file_pqa, params);
-
             GOSTSignature ds = new GOSTSignature(p, q, a);
             int key_length = 256;
             BigInteger x = ds.getRandomPrivateKey(key_length);
-
             BigInteger y = ds.getPublicKey(x);
-
-            File publicKey = new File(this.inputFilePath + ".pub");
-            writeToFile(publicKey, y.toString(16));
 
             File inputFile = new File(this.inputFilePath);
             byte[] message = readFromFile(inputFile);
@@ -104,12 +93,12 @@ public class GOST341094 {
             byte[] hash = new byte[gost3411.getDigestSize()];
             gost3411.doFinal(hash, 0);
 
+            File fileSig = new File(this.inputFilePath + ".sig");
 
-            String signature = ds.sign(toHexString(hash), x);
-            File sigfile = new File(this.inputFilePath + ".sig");
-            writeToFile(sigfile, signature);
-            System.out.println("Hash:" + toHexString(hash));
-            System.out.println("Signature:" + signature);
+            String signature = ds.sign(toHexString(hash), x) + "\n";
+            String dataWrite = p.toString(16) + "\n" + q.toString(16) + "\n" +
+                    a.toString(16)+ "\n" + y.toString(16) + "\n" + signature + "\n";
+            writeToFile(fileSig, dataWrite);
 
             return 0;
         } catch (Exception e) {
@@ -124,19 +113,24 @@ public class GOST341094 {
             GOST3411Digest gost3411 = new GOST3411Digest();
 
 //            System.out.println("File with p, q, a:");
-            File pqafile = new File(this.pqaFilePath);
+            File sigFile = new File(this.sigFilePath);
 
-            byte[] data = readFromFile(pqafile);
+            byte[] data = readFromFile(sigFile);
             String[] params = new String(data).split("\n");
+            for (int i =0; i < 5; i++)
+                System.out.println(params[i]);
             BigInteger p = new BigInteger(params[0], 16);
             BigInteger q = new BigInteger(params[1], 16);
             BigInteger a = new BigInteger(params[2], 16);
 
 //            System.out.println("File with public key:");
-            File pubkeyfile = new File(this.pubkeyFilePath);
-            data = readFromFile(pubkeyfile);
-            BigInteger y = new BigInteger(new String(data), 16);
+//            File pubkeyfile = new File(this.pubkeyFilePath);
+//            data = readFromFile(pubkeyfile);
+            BigInteger y = new BigInteger(params[3], 16);
             GOSTSignature ds = new GOSTSignature(p, q, a);
+//            File sigfile = new File(this.sigFilePath);
+//            data = readFromFile(sigfile);
+            String signature = new String(params[4]);
 
             File inputfile = new File(this.inputFilePath);
             data = readFromFile(inputfile);
@@ -145,11 +139,9 @@ public class GOST341094 {
             gost3411.doFinal(hash, 0);
 
 //            System.out.println("File with signature:");
-            File sigfile = new File(this.sigFilePath);
-            data = readFromFile(sigfile);
-            String signature = new String(data);
-            System.out.println("Hash:" + toHexString(hash));
-            System.out.println("Verification of a signature: " + signature);
+
+//            System.out.println("Hash:" + toHexString(hash));
+//            System.out.println("Verification of a signature: " + signature);
             boolean result = ds.verify(toHexString(hash), signature, y);
             if (result) {
                 return 0;

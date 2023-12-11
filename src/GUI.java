@@ -65,15 +65,15 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String inputFilePath = selectFile("Выберите файл для проверки (all)");
-                String pubkeyFilePath = selectFile("Выберите файл с открытым ключом (.pub)");
+//                String pubkeyFilePath = selectFile("Выберите файл с открытым ключом (.pub)");
                 String sigKeyFilePath = selectFile("Выберите файл с электронной подписью (.sig)");
-                String pqaFile = selectFile("Выберите файл с параметрами системы (.pqa)");
+//                String pqaFile = selectFile("Выберите файл с параметрами системы (.pqa)");
 
 
-                GOST341094 subcheckFile = new GOST341094(inputFilePath, sigKeyFilePath, pqaFile, pubkeyFilePath);
-                subcheckFile.check_signature_file();
+                GOST341094 subCheckFile = new GOST341094(inputFilePath, sigKeyFilePath);
+                subCheckFile.check_signature_file();
 
-                if(subcheckFile.check_signature_file() == 0){
+                if(subCheckFile.check_signature_file() == 0){
                     JDialog jd2 = new JDialog();
                     jd2.setTitle("Электронная подпись действительна для этого файла");
                     String msg14 = "<html><font color = 'black'> Проверка завершена: <br/> <font color = 'green'> Подпись " +

@@ -8,13 +8,10 @@ import java.util.Random;
 import static java.lang.Math.*;
 
 class Generator {
-
     private LinearCongruentialGenerator generator;
-
     Generator(LinearCongruentialGenerator generator) {
         this.generator = generator;
     }
-
     private BigInteger[] generatePrimes512() {
         int bitLength = 512;
         List<Integer> t = new ArrayList<>();
